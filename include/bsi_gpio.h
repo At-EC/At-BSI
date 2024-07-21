@@ -105,7 +105,7 @@ typedef struct {
     };
 } bs_gpio_ctrl_1_t;
 
-#define GPIO_CTRL_1_VAL(...) CM_Vg(in_out, out_mode, speed, up_down, out_set, lock, alternate, ##__VA_ARGS__)
+#define GPIO_CTRL_1_VAL(...) CM(ARGS_NUM(__VA_ARGS__))(in_out, out_mode, speed, up_down, out_set, lock, alternate, __VA_ARGS__)
 
 typedef struct {
     u32_t power : 1;
@@ -124,7 +124,7 @@ typedef struct {
     };
 } bs_gpio_ctrl_2_t;
 
-#define GPIO_CTRL_2_VAL(...) CM_Va(power, ##__VA_ARGS__)
+#define GPIO_CTRL_2_VAL(...) CM(ARGS_NUM(__VA_ARGS__))(power, __VA_ARGS__)
 
 /* End of section using anonymous unions */
 #if defined(__CC_ARM)

@@ -21,13 +21,7 @@ u32_t bsi_gpio_ctrl_1_config(bs_gpio_port_pin_t port_pin, bs_gpio_ctrl_1_t ctrl_
         return RESULT_INVALID_PIN;
     }
 
-    u8_t val = 0u;
-    BS_MAP(ctrl_1.bits.in_out,
-           BS_CASE(val, CTRL_INPUT, 1);
-           BS_CASE(val, CTRL_OUTPUT, 2);
-           BS_CASE(val, CTRL_AFIO, 3);
-           BS_CASE(val, CTRL_ANALOG, 4);
-           BS_ERR(RESULT_INVALID_IN_OUT););
+    u32_t val = BS_MAP(CB(ctrl_1, in_out), CTRL_INPUT, 1, CTRL_OUTPUT, 2, CTRL_AFIO, 3, CTRL_ANALOG, 4);
 
     return 0;
 }
