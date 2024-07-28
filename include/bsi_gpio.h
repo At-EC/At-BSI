@@ -13,13 +13,13 @@ enum {
     RESULT_INVALID_IN_OUT,
 };
 
-typedef u8_t bs_gpio_port_t;
-typedef u8_t bs_gpio_pin_t;
-typedef u16_t bs_gpio_port_pin_t;
+typedef u8_t gpio_port_t;
+typedef u8_t gpio_pin_t;
+typedef u16_t gpio_num_t;
 
-#define BS_GPIO_PORT(port_pin) (bs_gpio_port_t)(((bs_gpio_port_pin_t)(port_pin) >> 8u) & 0xFFu)
-#define BS_GPIO_PIN(port_pin)  (bs_gpio_pin_t)((bs_gpio_port_pin_t)(port_pin) & 0xFFu)
-#define BS_GPIO_NUM(port, pin) (bs_gpio_port_pin_t)((((bs_gpio_port_t)(port) & 0xFFu) << 8u) | ((bs_gpio_pin_t)(pin) & 0xFFu))
+#define BS_GPIO_PORT(num) (gpio_port_t)(((gpio_pin_t)(num) >> 8u) & 0xFFu)
+#define BS_GPIO_PIN(num)  (gpio_pin_t)((gpio_pin_t)(num) & 0xFFu)
+#define BS_GPIO_NUM(port, pin) (gpio_num_t)((((gpio_port_t)(port) & 0xFFu) << 8u) | ((gpio_pin_t)(pin) & 0xFFu))
 
 /* Start of section using anonymous unions */
 #if defined(__CC_ARM)
@@ -68,12 +68,6 @@ typedef struct {
         CTRL_HIGH,
     };
 
-    u32_t lock : 1;
-    enum {
-        CTRL_UNLOCK = (0u),
-        CTRL_LOCK,
-    };
-
     u32_t alternate : 4;
     enum {
         CTRL_AF_FUNC_0 = (0u),
@@ -95,7 +89,7 @@ typedef struct {
         CTRL_AF_FUNC_15,
     };
 
-    u32_t rsvd : 3;
+    u32_t rsvd : 4;
 } ctrl_1_b_t;
 
 typedef struct {
@@ -103,18 +97,24 @@ typedef struct {
         u32_t value;
         ctrl_1_b_t bits;
     };
-} bs_gpio_ctrl_1_t;
+} gpio_ctrl_1_t;
 
-#define GPIO_CTRL_1_VAL(...) CM(ARGS_NUM(__VA_ARGS__))(in_out, out_mode, speed, up_down, out_set, lock, alternate, __VA_ARGS__)
+#define GPIO_CTRL_1_VAL(...) CM(ARGS_NUM(__VA_ARGS__))(in_out, out_mode, speed, up_down, out_set, alternate, __VA_ARGS__)
 
 typedef struct {
+    u32_t lock : 1;
+    enum {
+        CTRL_UNLOCK = (0u),
+        CTRL_LOCK,
+    };
+
     u32_t power : 1;
     enum {
         CTRL_POWER_ON = (0u),
         CTRL_POWER_OFF,
     };
 
-    u32_t rsvd : 31;
+    u32_t rsvd : 30;
 } ctrl_2_b_t;
 
 typedef struct {
@@ -122,9 +122,28 @@ typedef struct {
         u32_t value;
         ctrl_2_b_t bits;
     };
-} bs_gpio_ctrl_2_t;
+} gpio_ctrl_2_t;
 
-#define GPIO_CTRL_2_VAL(...) CM(ARGS_NUM(__VA_ARGS__))(power, __VA_ARGS__)
+#define GPIO_CTRL_2_VAL(...) CM(ARGS_NUM(__VA_ARGS__))(lock, power, __VA_ARGS__)
+
+#define CTRL_MSK   MASK_BIT(2)
+#define CTRL_SET(n, val) val  << n
+
+typedef struct {
+    vu32_t ctrl;
+    vu32_t out_mode;
+    vu32_t out_speed;
+    vu32_t up_down;
+    vu32_t in_status;
+    vu32_t out_ctrl;
+    vu32_t bit_op;
+    vu32_t lock;
+    vu32_t alt_fun_0;
+    vu32_t alt_fun_1;
+    vu32_t clear;
+    vu32_t toggle;
+    vu32_t secure;
+} gpio_regs_t;
 
 /* End of section using anonymous unions */
 #if defined(__CC_ARM)

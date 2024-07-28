@@ -38,14 +38,14 @@ enum {
     BS_GPIO_PIN_NUM,
 };
 
-static inline vu32_t bs_gpio_base_regs_addr(u8_t inst)
+static inline vu32_t gpio_base_regs_addr(u8_t inst)
 {
-    extern vu32_t g_bs_gpio_base_regs[];
+    extern vu32_t g_gpio_base_regs[];
 
     if (inst >= BS_GPIO_PORT_NUM) {
         return NULL;
     }
-    return g_bs_gpio_base_regs[inst];
+    return g_gpio_base_regs[inst];
 }
 
 #endif

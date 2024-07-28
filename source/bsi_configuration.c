@@ -6,5 +6,5 @@
  **/
 #include "bsi_configuration.h"
 
-vu32_t g_bs_gpio_base_regs[BS_GPIO_PORT_NUM] = {GPIOA, GPIOB, GPIOC};
+vu32_t g_gpio_base_regs[BS_GPIO_PORT_NUM] = {GPIOA, GPIOB, GPIOC};
 
